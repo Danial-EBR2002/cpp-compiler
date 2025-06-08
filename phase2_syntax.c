@@ -704,13 +704,22 @@ static ASTNode *parse_if_statement() {
     ASTNode *then_stmt = parse_statement();
     node_list_append(&if_node->children, then_stmt);
 
-    if (peek_token() && peek_token()->type == TOK_KEYWORD && strcmp(peek_token()->lexeme, "else") == 0) {
-        advance_token();
-        ASTNode *else_stmt = parse_statement();
-        ASTNode *else_node = ast_new_node(NODE_ELSE, "Else:");
-        node_list_append(&else_node->children, else_stmt);
-        node_list_append(&if_node->children, else_node);
+    Token *t = peek_token();
+    if (t && t->type == TOK_KEYWORD && strcmp(t->lexeme, "else") == 0) {
+        advance_token(); // consume 'else'
+
+        Token *next = peek_token();
+        if (next && next->type == TOK_KEYWORD && strcmp(next->lexeme, "if") == 0) {
+            ASTNode *else_if_node = parse_statement();
+            node_list_append(&if_node->children, else_if_node);
+        } else {
+            ASTNode *else_body = parse_body();
+            ASTNode *else_node = ast_new_node(NODE_ELSE, "Else:");
+            node_list_append(&else_node->children, else_body);
+            node_list_append(&if_node->children, else_node);
+        }
     }
+
 
     return if_node;
 }

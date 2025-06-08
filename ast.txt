@@ -1,15 +1,3 @@
-VarDeclGroup:
-    VarDecl: int global =
-        Number(42)
-FunctionDefinition: multiply
-    Parameters:
-        Param: float a
-        Param: float b
-    Body:
-        Return:
-            BinOp(*)
-                Var(a)
-                Var(b)
 FunctionDefinition: main
     Parameters:
     Body:
@@ -46,50 +34,17 @@ FunctionDefinition: main
                     BinOp(+)
                         Var(x)
                         Var(y)
-            Else:
+            If:
+                BinOp(>)
+                    BinOp(+)
+                        Var(x)
+                        BinOp(*)
+                            Var(y)
+                            Number(2)
+                    Number(30)
                 Body:
                     Assign: sum =
                         BinOp(-)
                             Var(y)
                             Var(x)
-        For:
-            Assign: i =
-                Number(0)
-            BinOp(<)
-                Var(i)
-                Number(5)
-            Assign: i =
-                BinOp(+)
-                    Var(i)
-                    Number(1)
-            Body:
-                Assign: sum =
-                    BinOp(+)
-                        Var(sum)
-                        Var(i)
-        While:
-            BinOp(>=)
-                Var(i)
-                Number(0)
-            Body:
-                If:
-                    BinOp(==)
-                        BinOp(%)
-                            Var(i)
-                            Number(2)
-                        Number(0)
-                    Body:
-                        Assign: sum =
-                            BinOp(+)
-                                Var(sum)
-                                Var(i)
-                Assign: i =
-                    BinOp(-)
-                        Var(i)
-                        Number(1)
-        Assign: result =
-            multiply
-                Cast(float)
-                    Var(sum)
-                Number(3.14)
         Return: 0
