@@ -152,15 +152,29 @@ Token number_literal() {
 Token string_literal() {
     char buffer[MAX_LEXEME_LEN];
     int length = 0, start_line = line_number;
+
     buffer[length++] = peek(); advance();
+
     while (peek() != '"' && peek() != EOF) {
-        if (peek() == '\\' && peek_next() == '"') { buffer[length++] = peek(); advance(); }
-        buffer[length++] = peek(); advance();
+        if (peek() == '\\' && peek_next() == '"') {
+            buffer[length++] = peek(); advance();
+        }
+        if (length < MAX_LEXEME_LEN - 1)
+            buffer[length++] = peek();
+        advance();
     }
-    if (peek() == '"') { buffer[length++] = peek(); advance(); }
+
+    if (peek() == '"') {
+        buffer[length++] = peek(); advance();
+    } else {
+        fprintf(stderr, "Unterminated string literal at line %d\n", start_line);
+        exit(EXIT_FAILURE);
+    }
+
     buffer[length] = '\0';
     return make_token(TOK_STRING_LITERAL, buffer, start_line);
 }
+
 
 Token operator_or_punctuation() {
     char buf[3] = {0};
